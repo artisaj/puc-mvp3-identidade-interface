@@ -45,8 +45,37 @@ apontar para a API, em desenvolvimento `http://localhost:8000`.
 | `npm run preview` | Serve localmente o build de produção. |
 
 As telas, rotas protegidas e integração HTTP serão adicionadas nas próximas
-etapas. A execução por contêiner será documentada com o `Dockerfile` e o Docker
-Compose nesta interface.
+etapas.
+
+## Docker
+
+Construa a imagem no diretório deste repositório com:
+
+```bash
+docker build -t identidade-local-client .
+```
+
+Execute-a com:
+
+```bash
+docker run --rm -p 5173:5173 identidade-local-client
+```
+
+## Docker Compose
+
+O arquivo `docker-compose.yml` inicia a interface e a API juntas. Mantenha os
+dois repositórios lado a lado, nas pastas `client` e `api`, e copie
+`../api/.env.example` para `../api/.env`, definindo um segredo seguro para
+`JWT_SECRET_KEY`.
+
+No diretório da interface, execute:
+
+```bash
+docker compose up --build
+```
+
+A interface será exposta em `http://localhost:5173` e a API em
+`http://localhost:8000`. O Compose preserva o banco SQLite no volume `api_data`.
 
 ## Licença
 
