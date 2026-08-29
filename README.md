@@ -5,6 +5,12 @@ login, preenchimento assistido de endereço, edição do perfil e administraçã
 sessões. Ela mantém o access token apenas em memória e delega autenticação,
 persistência e ViaCEP à API FastAPI independente.
 
+Também oferece a rota pública `/esqueci-minha-senha`. Ela solicita a recuperação
+sem confirmar se o e-mail está cadastrado e, no ambiente de desenvolvimento,
+permite informar o JWT temporário recebido para escolher uma nova senha. Em
+ambientes que não sejam de desenvolvimento, a API não retorna token: o fluxo
+não substitui uma recuperação real por e-mail.
+
 ## Arquitetura
 
 ![Fluxo de arquitetura: usuário acessa o client React; o client chama a API FastAPI; a API usa SQLite e ViaCEP.](public/architecture.svg)
@@ -72,6 +78,8 @@ métodos REST requeridos:
 | `POST` | `/auth/login` | Inicia sessão e recebe access token. |
 | `POST` | `/auth/refresh` | Renova o access token com cookie seguro. |
 | `POST` | `/auth/logout` | Encerra a sessão atual. |
+| `POST` | `/auth/forgot-password` | Solicita recuperação sem revelar a existência da conta. |
+| `POST` | `/auth/reset-password` | Envia token temporário e nova senha; encerra sessões anteriores. |
 | `GET` | `/users/me` | Exibe o perfil autenticado. |
 | `PUT` | `/users/me` | Salva perfil e endereço. |
 | `GET` | `/sessions` | Lista sessões ativas. |

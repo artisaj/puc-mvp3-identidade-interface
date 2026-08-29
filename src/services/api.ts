@@ -39,6 +39,8 @@ function clean<T extends Record<string, unknown>>(payload: T) {
 export const api = {
   async register(payload: UserInput & { email: string; password: string }) { return request<User>('/auth/register', { method: 'POST', body: JSON.stringify(clean(payload)) }) },
   async login(email: string, password: string) { const token = await request<{ access_token: string }>('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) }); setAccessToken(token.access_token) },
+  forgotPassword: (email: string) => request<{ accepted: true; reset_token?: string }>('/auth/forgot-password', { method: 'POST', body: JSON.stringify({ email }) }),
+  resetPassword: (token: string, newPassword: string) => request<void>('/auth/reset-password', { method: 'POST', body: JSON.stringify({ token, new_password: newPassword }) }),
   async refresh() { const token = await request<{ access_token: string }>('/auth/refresh', { method: 'POST' }); setAccessToken(token.access_token) },
   async logout() { await request<void>('/auth/logout', { method: 'POST' }) },
   getProfile: () => request<User>('/users/me', {}, true),
