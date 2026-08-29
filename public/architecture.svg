@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="520" viewBox="0 0 1200 520" role="img" aria-labelledby="title description">
+  <title id="title">Arquitetura do sistema Identidade Local</title>
+  <desc id="description">O usuário usa a interface React, que chama a API FastAPI. A API persiste dados no SQLite e consulta o ViaCEP.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f6f8ff"/>
+      <stop offset="1" stop-color="#edf8f5"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="7" stdDeviation="8" flood-color="#172554" flood-opacity=".14"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0 0L10 5L0 10Z" fill="#475569"/>
+    </marker>
+    <style>
+      .label { font: 700 25px Arial, sans-serif; fill: #102a43; }
+      .detail { font: 18px Arial, sans-serif; fill: #486581; }
+      .small { font: 600 16px Arial, sans-serif; fill: #334e68; }
+      .arrow { fill: none; stroke: #475569; stroke-width: 3; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect width="1200" height="520" rx="28" fill="url(#background)"/>
+  <text x="600" y="58" text-anchor="middle" class="label" font-size="31">Identidade Local — arquitetura</text>
+
+  <g filter="url(#shadow)">
+    <rect x="55" y="180" width="205" height="155" rx="18" fill="#fff" stroke="#8b5cf6" stroke-width="3"/>
+    <circle cx="157" cy="224" r="28" fill="#ede9fe"/>
+    <path d="M157 204a14 14 0 1 0 0 28a14 14 0 0 0 0-28m-25 66c2-20 17-30 25-30s23 10 25 30" fill="none" stroke="#6d28d9" stroke-width="6" stroke-linecap="round"/>
+    <text x="157" y="300" text-anchor="middle" class="label">Usuário</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="360" y="150" width="250" height="215" rx="18" fill="#fff" stroke="#2563eb" stroke-width="3"/>
+    <rect x="438" y="190" width="94" height="68" rx="7" fill="#dbeafe" stroke="#2563eb" stroke-width="4"/>
+    <path d="M428 271h114" stroke="#2563eb" stroke-width="6" stroke-linecap="round"/>
+    <text x="485" y="307" text-anchor="middle" class="label">Client</text>
+    <text x="485" y="334" text-anchor="middle" class="detail">React + TypeScript</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="700" y="150" width="250" height="215" rx="18" fill="#fff" stroke="#059669" stroke-width="3"/>
+    <path d="M785 198h80v57h-80zM797 212h56M797 226h42M797 240h50" fill="none" stroke="#059669" stroke-width="4" stroke-linecap="round"/>
+    <text x="825" y="307" text-anchor="middle" class="label">API</text>
+    <text x="825" y="334" text-anchor="middle" class="detail">FastAPI</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="995" y="78" width="160" height="128" rx="18" fill="#fff" stroke="#f59e0b" stroke-width="3"/>
+    <ellipse cx="1075" cy="112" rx="45" ry="15" fill="#fef3c7" stroke="#d97706" stroke-width="3"/>
+    <path d="M1030 112v44c0 20 90 20 90 0v-44M1030 135c0 20 90 20 90 0" fill="#fef3c7" stroke="#d97706" stroke-width="3"/>
+    <text x="1075" y="188" text-anchor="middle" class="label">SQLite</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="995" y="310" width="160" height="128" rx="18" fill="#fff" stroke="#ef4444" stroke-width="3"/>
+    <path d="M1045 357h60M1045 378h45M1045 399h52" stroke="#dc2626" stroke-width="5" stroke-linecap="round"/>
+    <text x="1075" y="420" text-anchor="middle" class="label">ViaCEP</text>
+  </g>
+
+  <path class="arrow" d="M270 257H345"/>
+  <text x="307" y="238" text-anchor="middle" class="small">navegação</text>
+  <path class="arrow" d="M620 257H685"/>
+  <text x="652" y="238" text-anchor="middle" class="small">REST JSON</text>
+  <path class="arrow" d="M960 237C990 230 990 166 982 150"/>
+  <text x="1002" y="240" class="small">persiste</text>
+  <path class="arrow" d="M960 278C990 295 990 361 982 374"/>
+  <text x="991" y="326" class="small">GET externo</text>
+  <text x="600" y="475" text-anchor="middle" class="detail">Credenciais, tokens e sessões são responsabilidade exclusiva da API.</text>
+</svg>
