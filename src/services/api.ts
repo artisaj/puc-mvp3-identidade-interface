@@ -1,4 +1,4 @@
-import type { Address, Session, User, UserInput } from '../types/api'
+import type { Address, ApiKey, ApiKeyCreated, Session, User, UserInput } from '../types/api'
 
 const apiUrl = (import.meta.env.VITE_API_URL || 'http://localhost:8000').replace(/\/$/, '')
 let accessToken: string | null = null
@@ -48,4 +48,7 @@ export const api = {
   lookupAddress: (zipCode: string) => request<Address>(`/addresses/lookup/${encodeURIComponent(zipCode)}`),
   getSessions: () => request<Session[]>('/sessions', {}, true),
   deleteSession: (id: string) => request<void>(`/sessions/${encodeURIComponent(id)}`, { method: 'DELETE' }, true),
+  createApiKey: (name: string) => request<ApiKeyCreated>('/api-keys', { method: 'POST', body: JSON.stringify({ name }) }, true),
+  getApiKeys: () => request<ApiKey[]>('/api-keys', {}, true),
+  deleteApiKey: (id: string) => request<void>(`/api-keys/${encodeURIComponent(id)}`, { method: 'DELETE' }, true),
 }

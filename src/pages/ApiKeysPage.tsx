@@ -1,0 +1,18 @@
+/* oxlint-disable */
+import { useCallback, useEffect, useState } from 'react'
+import type { FormEvent } from 'react'
+import { ApiError, api } from '../services/api'
+import type { ApiKey, ApiKeyCreated } from '../types/api'
+import './ApiKeysPage.css'
+
+const message = (error: unknown) => error instanceof ApiError ? error.message : 'Não foi possível concluir a solicitação. Tente novamente.'
+const formatDate = (value: string | null) => value ? new Intl.DateTimeFormat('pt-BR', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value)) : 'Nunca utilizada'
+
+export function ApiKeysPage() {
+  const [keys, setKeys] = useState<ApiKey[]>([]); const [name, setName] = useState(''); const [created, setCreated] = useState<ApiKeyCreated | null>(null); const [loading, setLoading] = useState(true); const [busy, setBusy] = useState(false); const [revoking, setRevoking] = useState(''); const [error, setError] = useState('')
+  const load = useCallback(async () => { try { setKeys(await api.getApiKeys()) } catch (reason) { setError(message(reason)) } finally { setLoading(false) } }, [])
+  useEffect(() => { void load() }, [load])
+  const create = async (event: FormEvent) => { event.preventDefault(); setError(''); setCreated(null); setBusy(true); try { const key = await api.createApiKey(name); setCreated(key); setKeys((items) => [key, ...items]); setName('') } catch (reason) { setError(message(reason)) } finally { setBusy(false) } }
+  const revoke = async (id: string) => { setError(''); setRevoking(id); try { await api.deleteApiKey(id); setKeys((items) => items.map((key) => key.id === id ? { ...key, is_active: false, revoked_at: new Date().toISOString() } : key)) } catch (reason) { setError(message(reason)) } finally { setRevoking('') } }
+  return <><header className="heading"><p>Segurança para integrações</p><h1>Chaves de API</h1><span>Crie credenciais para automações. O segredo é exibido uma única vez e não pode ser recuperado.</span></header><section className="card page-card api-key-create"><form onSubmit={create}><label>Nome da chave <input required maxLength={120} value={name} onChange={(event) => setName(event.target.value)} placeholder="Ex.: integração de relatórios" autoComplete="off" /></label><button className="primary" disabled={busy}>{busy ? 'Criando…' : 'Criar chave de API'}</button></form>{error && <p className="notice error" role="alert">{error}</p>}{created && <div className="api-key-secret" role="status"><strong>Salve o segredo agora</strong><p>Ele não será mostrado novamente. Armazene-o em um gerenciador de segredos, nunca no código-fonte.</p><label>ID público <input readOnly value={created.public_key_id} aria-label="ID público da chave" /></label><label>Segredo <input readOnly value={created.secret} aria-label="Segredo da chave" /></label><button className="secondary" type="button" onClick={() => setCreated(null)}>Entendi, fechar segredo</button></div>}</section><section className="api-key-list"><h2>Suas chaves</h2>{loading ? <p>Carregando chaves…</p> : keys.length === 0 ? <div className="empty"><strong>Nenhuma chave criada</strong><p>Crie uma chave para autenticar uma integração pela rota de client credentials.</p></div> : keys.map((key) => <article className="session api-key" key={key.id}><b>⌘</b><div><h2>{key.name}</h2><p>{key.public_key_id}</p><small>Criada em {formatDate(key.created_at)} · {formatDate(key.last_used_at)}</small></div>{key.is_active ? <button className="danger" onClick={() => revoke(key.id)} disabled={revoking === key.id}>{revoking === key.id ? 'Revogando…' : 'Revogar'}</button> : <span className="revoked">Revogada</span>}</article>)}</section></>
+}

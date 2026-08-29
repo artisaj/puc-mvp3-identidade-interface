@@ -2,7 +2,7 @@
 
 Interface React do sistema educacional **Identidade Local**. Permite cadastro,
 login, preenchimento assistido de endereço, edição do perfil e administração de
-sessões. Ela mantém o access token apenas em memória e delega autenticação,
+sessões e chaves de API. Ela mantém o access token apenas em memória e delega autenticação,
 persistência e ViaCEP à API FastAPI independente.
 
 Também oferece a rota pública `/esqueci-minha-senha`. Ela solicita a recuperação
@@ -76,6 +76,7 @@ métodos REST requeridos:
 |---|---|---|
 | `POST` | `/auth/register` | Cria a conta. |
 | `POST` | `/auth/login` | Inicia sessão e recebe access token. |
+| `POST` | `/auth/api-key-login` | Permite integrações trocarem ID e segredo por access token. |
 | `POST` | `/auth/refresh` | Renova o access token com cookie seguro. |
 | `POST` | `/auth/logout` | Encerra a sessão atual. |
 | `POST` | `/auth/forgot-password` | Solicita recuperação sem revelar a existência da conta. |
@@ -84,12 +85,25 @@ métodos REST requeridos:
 | `PUT` | `/users/me` | Salva perfil e endereço. |
 | `GET` | `/sessions` | Lista sessões ativas. |
 | `DELETE` | `/sessions/{session_id}` | Revoga a sessão escolhida. |
+| `POST` | `/api-keys` | Cria uma chave e apresenta o segredo uma única vez. |
+| `GET` | `/api-keys` | Lista metadados das chaves criadas. |
+| `DELETE` | `/api-keys/{key_id}` | Revoga uma chave. |
 | `GET` | `/addresses/lookup/{zip_code}` | Preenche o endereço a partir do CEP. |
 | `GET` | `/health` | Verifica disponibilidade da API quando necessário. |
 
 Rotas protegidas recebem `Authorization: Bearer <access_token>`. Respostas de
 erro trazem `detail`; a interface apresenta feedback de carregamento, sucesso
 ou erro e preserva a edição manual do endereço quando a busca de CEP falha.
+
+## Chaves de API
+
+Na área autenticada, **Chaves API** permite nomear uma integração, criar sua
+credencial e revogá-la. O ID público e o segredo aparecem logo após a criação;
+o segredo fica somente no estado efêmero dessa tela e desaparece ao fechá-la ou
+recarregar a página. A API não permite recuperá-lo depois: armazene-o em um
+gerenciador de segredos, nunca no código-fonte, no navegador ou em arquivos
+versionados. Integrações usam `POST /auth/api-key-login` com `key_id` e
+`secret` para obter um JWT Bearer curto.
 
 ## ViaCEP: rota, cadastro e condições de uso
 
